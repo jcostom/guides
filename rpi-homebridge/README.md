@@ -62,6 +62,7 @@ To install, unpack as follows:
 ```
 cd /usr/local
 sudo tar xvf /path/to/node-v6.11.0-linux-armv6l.tar.xz --strip=1
+sudo chown -R root:staff bin lib include share
 ```
 That last flag `--strip=1` tells tar to ignore one level of path in the archive, so your unpacked files neatly fall into /usr/local, ready to go.
 
