@@ -8,8 +8,8 @@ There are a ton of these out there, lots of different device drivers too.  Too m
 
 I've had the best success with devices that implement the Prolific PL2303 chipset.  Here's a couple of examples from Amazon.  These aren't affiliate links, I promise.
 
-* [TRENDnet](https://amzn.com/B0007T27H8) - My latest PL2303, works great, looks nicer than the Plugable (if that sort of thing is something you care about; I don't care so much about this), and was cheaper (1 of the 2 things I do care about - the other is "works well".)
-* [Plugable](https://amzn.com/B00425S1H8) -  My first PL2303, still works.
+*   [TRENDnet](https://amzn.com/B0007T27H8) - My latest PL2303, works great, looks nicer than the Plugable (if that sort of thing is something you care about; I don't care so much about this), and was cheaper (1 of the 2 things I do care about - the other is "works well".)
+*   [Plugable](https://amzn.com/B00425S1H8) -  My first PL2303, still works.
 
 Got your dongle?  Throw away the driver CD.  You don't need it. Go straight to [Prolific's website](http://www.prolific.com.tw/US/ShowProduct.aspx?p_id=229&pcid=41) and get the latest driver (v1.6.0 as of when this was written).
 
