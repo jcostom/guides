@@ -102,12 +102,12 @@ Here's a working config example:
 ```
 {
     "bridge": {
-        "name": "Jenny's Homebridge",
-        "username": "DE:AD:BE:EF:CA:FE",
+		"name": "Jenny's Homebridge",
+		"username": "DE:AD:BE:EF:CA:FE",
 		"manufacturer": "Homebridge",
 		"model": "Pi Zero W",
 		"serialNumber": "8675309",
-        "pin": "123-45-678"
+		"pin": "123-45-678"
     },
     "description": "Raspberry Pi Zero W with homebridge to extend HomeKit to various devices",
     "platforms": [
