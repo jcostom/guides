@@ -8,7 +8,7 @@ So, we're not exposing a bunch of ports outside the host, so how do we accomplis
 
 I installed an Ubuntu 16.04-LTS Server VM. I chose the 64-bit image, since as course of normal operations, I install 64-bit systems whenever possible, to maximize scalability.  I won't walk through the whole process, as it's straight forward enough. I installed with the openssh-server role, and a static IP address.
 
-Get your environment setup the way you like it. Shell, aliases, whatever floats your boat. Then come back and get going again...
+Do your updates, get your environment setup the way you like it. Shell, aliases, whatever floats your boat. Then come back and get going again...
 
 ## Add Docker
 
