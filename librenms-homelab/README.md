@@ -75,7 +75,7 @@ $ docker run -d -t \
     oxidized
 ```
 
-At this point, you'll want to stop the Oxidized container so you can configure it. You do this, of course, with `$ docker stop oxidized`. Due to a (current) shortcoming in the Oxidized container, you'll want to consider adding to your /etc/rc.local something like: `rm -f /var/docks/oxidized/pid`. This will allow a clean startup of Oxidized, as it will refuse to start if it sees the pid file. Here's a sample `/var/docks/oxidized/config`:
+At this point, you'll want to stop the Oxidized container so you can configure it. You do this, of course, with `$ docker stop oxidized`. Due to a (current) shortcoming in the Oxidized container, you'll want to consider adding to your /etc/rc.local something like: `rm -f /var/docks/oxidized/pid`. This will allow a clean startup of Oxidized, as it will refuse to start if it sees the pid file (like say, when you reboot the system and the Oxidized container doesn't clean up after itself). Here's a sample `/var/docks/oxidized/config`:
 
 ```
 ---
