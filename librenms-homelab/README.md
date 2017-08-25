@@ -4,6 +4,8 @@ This guide grew out of my homelab setup, where I've installed LibreNMS using Doc
 
 So, we're not exposing a bunch of ports outside the host, so how do we accomplish the magic of cross-container interactions without lots of extra work (like container IPAM, etc.) then? We'll use the --link flags on some of our containers. What this does is automagically stuff entries into `/etc/hosts` on the container you're creating, so it can figure out how to talk to the other container using its "internal" IP address.
 
+**NOTE**: Anything in this document that's enclosed in angle brackets, <like this> should be replaced with something relevant to you/your installation.
+
 ## Getting started - Install Ubuntu VM
 
 I installed an Ubuntu 16.04-LTS Server VM. I chose the 64-bit image, since as course of normal operations, I install 64-bit systems whenever possible, to maximize scalability.  I won't walk through the whole process, as it's straight forward enough. I installed with the openssh-server role, and a static IP address.
@@ -43,7 +45,7 @@ MariaDB is an open source alternative to MySQL, which is built to be fully compa
 $ docker run -d \
     --restart=unless-stopped \
     --name=mariadb \
-    -e MYSQL_ROOT_PASSWORD=LykdpAimq3PMaXgL \
+    -e MYSQL_ROOT_PASSWORD=<root-db-password> \
     -v /var/docks/mariadb:/var/lib/mysql \
     mariadb
 ```
@@ -52,15 +54,14 @@ Before we move on to setup anything else, we'll create the database we're going 
 
 ```
 $ docker exec -it mariadb /bin/bash
-# mysql -p
-<enter your password here>
+# mysql -p<root-db-password>
 ```
 
 Now that you're connected, create the database & user. Again, generate a strong password somehow.
 
 ```
 CREATE DATABASE librenms CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-CREATE USER 'librenms'@'172.17.0.0/255.255.0.0' IDENTIFIED BY 'umA3YeoCmqPvdNpR';
+CREATE USER 'librenms'@'172.17.0.0/255.255.0.0' IDENTIFIED BY '<librenms-db-passwd>';
 GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'172.17.0.0/255.255.0.0';
 FLUSH PRIVILEGES;
 exit
@@ -111,7 +112,7 @@ output:
     directory: "/root/.config/oxidized/configs"
   git:
     single_repo: true
-    user: Oxidized
+    user: <Oxidized User>
     email: <someemail@somewhere.com>
     repo: "/root/.config/oxidized/configs.git"
 source:
@@ -154,7 +155,7 @@ $config['bad_if_regexp'][] = '/^macvtap.*$/';
 $config['bad_if_regexp'][] = '/gre.*$/';
 $config['bad_if_regexp'][] = '/tun[0-9]+$/';
 
-$config['snmp']['community'] = array("default-snmp-community");
+$config['snmp']['community'] = array("<default-snmp-community>");
 $config['enable_printers'] = 1;
 $config['mydomain'] = 'domain.org';
 #$config['front_page'] = "pages/front/map.php";
@@ -179,8 +180,8 @@ $ docker run -d \
     -e DB_HOST=db \
     -e DB_NAME=librenms \
     -e DB_USER=librenms \
-    -e DB_PASS=umA3YeoCmqPvdNpR \
-    -e BASE_URL=https://hostname-youre-using.domain.org \
+    -e DB_PASS=<librenms-db-passwd> \
+    -e BASE_URL=https://<hostname-youre-using.domain.org> \
     -e POLLERS=16 \
     -e TZ=America/New_York \
     --link mariadb:db \
@@ -284,13 +285,13 @@ Lastly, the remainder of the configuration:
 $ cat /var/docks/nginx/nginx/site-confs/default
 server {
     listen 80 default_server;
-    server_name hostname-youre-using.domain.org;
+    server_name <hostname-youre-using.domain.org>;
     return 302 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl default_server;
-    server_name hostname-youre-using.domain.org;
+    server_name <hostname-youre-using.domain.org>;
 
     ssl_certificate /config/keys/cert.crt;
     ssl_certificate_key /config/keys/cert.key;
