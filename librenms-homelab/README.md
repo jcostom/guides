@@ -303,6 +303,8 @@ server {
 
 Got it? Ok, start up nginx, and you're done. `$ docker start nginx`
 
+LibreNMS will be found at `https://<hostname-youre-using.domain.org/`, and Portainer will be found at `https://<hostname-youre-using.domain.org/docks/`.
+
 ## Login, Play
 
 Hit `https://<hostname-youre-using.domain.org/`, login as admin/admin, and get to work. Obviously, you'll want to make a different admin user, and obliterate the admin/admin one. Unless of course, you were the forward-thinking, free-spirit type that didn't use admin/admin way back when you added a user to LibreNMS. ;-)
