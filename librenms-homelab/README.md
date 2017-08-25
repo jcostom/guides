@@ -2,6 +2,8 @@
 
 This guide grew out of my homelab setup, where I've installed LibreNMS using Docker on an Ubuntu Linux VM, running on an ESXi 6.5 host. In our setup, the only externally-exposed networking is for the nginx reverse proxy we'll employ to provide a single means of accessing everything we're installing.
 
+So, we're not exposing a bunch of ports outside the host, so how do we accomplish the magic of cross-container interactions without lots of extra work (like container IPAM, etc.) then? We'll use the --link flags on some of our containers. What this does is automagically stuff entries into `/etc/hosts` on the container you're creating, so it can figure out how to talk to the other container using its "internal" IP address.
+
 ## Getting started - Install Ubuntu VM
 
 I installed an Ubuntu 16.04-LTS Server VM. I chose the 64-bit image, since as course of normal operations, I install 64-bit systems whenever possible, to maximize scalability.  I won't walk through the whole process, as it's straight forward enough. I installed with the openssh-server role, and a static IP address.
@@ -298,3 +300,9 @@ server {
 ```
 
 Got it? Ok, start up nginx, and you're done. `$ docker start nginx`
+
+## Login, Play
+
+Hit `https://<hostname-youre-using.domain.org/`, login as admin/admin, and get to work. Obviously, you'll want to make a different admin user, and obliterate the admin/admin one. Unless of course, you were the forward-thinking, free-spirit type that didn't use admin/admin way back when you added a user to LibreNMS. ;-)
+
+When you pop into the options to add Oxidized support, the URL you want is `http://oxidized:8888/`.
