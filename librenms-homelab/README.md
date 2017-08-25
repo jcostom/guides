@@ -225,7 +225,7 @@ $ docker run -d \
 $ docker stop nginx
 ```
 
-Next, pop on over to `/var/docks/nginx` and make some changes. We'll start with creating some Diffie-Hellman Key Exchange parameters. [Here's a better explanation](https://security.stackexchange.com/questions/94390/whats-the-purpose-of-dh-parameters) that I'd write about what it's for.
+Next, pop on over to `/var/docks/nginx` and make some changes. We'll start with creating some Diffie-Hellman Key Exchange parameters. [Here's a better explanation](https://security.stackexchange.com/questions/94390/whats-the-purpose-of-dh-parameters) than I'd write about what it's for.
 
 ```
 $ openssl dhparam -out /var/docks/nginx/keys/dhparam.pem 2048
