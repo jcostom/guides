@@ -41,13 +41,18 @@ $ docker run -d \
 
 MariaDB is an open source alternative to MySQL, which is built to be fully compatible with MySQL. So, we'll go with that. You'll note that the container takes the root password as a parameter when instantiating the container. I generated the password using 1Password's generation utility.
 
+PUID and PGID are the uid and gid values you want the processes to run as. For me, this was my normal user, though you're free to use whatever makes sense for your deployment.
+
 ```
 $ docker run -d \
     --restart=unless-stopped \
     --name=mariadb \
+    -e PUID=1000 \
+    -e PGID=1000 \
     -e MYSQL_ROOT_PASSWORD=<root-db-password> \
-    -v /var/docks/mariadb:/var/lib/mysql \
-    mariadb
+    -e TZ=America/New_York \
+    -v /var/docks/mariadb:/config \
+    linuxserver/mariadb
 ```
 
 Before we move on to setup anything else, we'll create the database we're going to end up using in our LibreNMS installation, as well as create the needed user.  We'll launch a shell inside the container, create the database, the user, and finally set the password to allow access from the private Docker network that's not exposed outside the host.
@@ -210,12 +215,12 @@ At this point, you can't login quite yet - that's going to happen after the next
 
 ## Install nginx
 
-First, create the container, then stop the container so we can complete our configuration.
+First, create the container, then stop the container so we can complete our configuration. PUID and PGID are the uid and gid values you want the processes to run as. For me, this was my normal user, though you're free to use whatever makes sense for your deployment.
 
 ```
 $ docker run -d \
     --name=nginx \
-    --restart=always \
+    --restart=unless-stopped \
     -v /var/docks/nginx:/config \
     -e PGID=1000 -e PUID=1000 \
     -p 80:80 -p 443:443 \
