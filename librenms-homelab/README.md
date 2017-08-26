@@ -78,14 +78,13 @@ Now that you've done that, exit that shell and get back to the host.
 
 ```
 $ docker run -d -t \
-    --restart=unless-stopped \
     --name=oxidized \
-    -v /var/docks/oxidized:/root/.config/oxidized \
-    oxidized/oxidized:latest \
-    oxidized
+    --restart=unless-stopped \
+    -v /var/docks/oxidized:/etc/oxidized \
+    alectolytic/oxidized
 ```
 
-At this point, you'll want to stop the Oxidized container so you can configure it. You do this, of course, with `$ docker stop oxidized`. Due to a (current) shortcoming in the Oxidized container, you'll want to consider adding to your /etc/rc.local something like: `rm -f /var/docks/oxidized/pid`. This will allow a clean startup of Oxidized, as it will refuse to start if it sees the pid file (like say, when you reboot the system and the Oxidized container doesn't clean up after itself). Here's a sample `/var/docks/oxidized/config`:
+At this point, you'll want to stop the Oxidized container so you can configure it. You do this, of course, with `$ docker stop oxidized`. Here's a sample `/var/docks/oxidized/config`:
 
 ```
 ---
@@ -105,7 +104,7 @@ groups:
     username: <username used on Juniper devices>
     password: <password used on Juniper devices>
     model: junos
-pid: "/root/.config/oxidized/pid"
+pid: "/var/run/oxidized/pid"
 input:
   default: ssh
   debug: false
@@ -114,16 +113,16 @@ input:
 output:
   default: git
   file:
-    directory: "/root/.config/oxidized/configs"
+    directory: "/etc/oxidized/configs"
   git:
     single_repo: true
     user: <Oxidized User>
     email: <someemail@somewhere.com>
-    repo: "/root/.config/oxidized/configs.git"
+    repo: "/etc/oxidized/configs.git"
 source:
   default: csv
   csv:
-    file: "/root/.config/oxidized/router.db"
+    file: "/etc/oxidized/router.db"
     delimiter: !ruby/regexp /:/
     map:
       name: 0
