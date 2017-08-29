@@ -2,7 +2,7 @@
 
 This guide grew out of my homelab setup, where I've installed LibreNMS using Docker on an Ubuntu Linux VM, running on an ESXi 6.5 host. In our setup, the only externally-exposed networking is for the nginx reverse proxy we'll employ to provide a single means of accessing everything we're installing.
 
-So, we're not exposing a bunch of ports outside the host, so how do we accomplish the magic of cross-container interactions without lots of extra work (like container IPAM, etc.) then? We'll use the --link flags on some of our containers. What this does is automagically stuff entries into `/etc/hosts` on the container you're creating, so it can figure out how to talk to the other container using its "internal" IP address.
+So, we're not exposing a bunch of ports outside the host, so how do we accomplish the magic of cross-container interactions without lots of extra work (like container IPAM, etc.) then? We'll use a custom Docker bridge, which makes use of Docker's embedded DNS services to support inter-container communication.
 
 **NOTE**: Anything in this document that's enclosed in angle brackets, <like this> should be replaced with something relevant to you/your installation.
 
