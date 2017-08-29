@@ -46,7 +46,7 @@ What's the dark side of this? Now we'll need to specify `--net=containers` on al
 
 ## Install Portainer
 
-[Portainer](https://portainer.io) is a nice user interface for quick access to basic operations and telemetry from a Docker host.  We're installing it to manage the location instance of Docker, though it's capable of managing a swarm cluster as well. Again, that's outside the scope of what we're doing, but it's good to know it's possible, right?
+[Portainer](https://portainer.io) is a nice user interface for quick access to basic operations and telemetry from a Docker host.  We're installing it to manage the location instance of Docker, though it's capable of managing a swarm cluster as well. That's outside the scope of what we're doing, but it's good to know it's possible, right?
 
 ```
 $ docker run -d \
