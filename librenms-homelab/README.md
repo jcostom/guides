@@ -1,6 +1,6 @@
 # Containerized LibreNMS install with SSL reverse proxy
 
-This guide grew out of my homelab setup, where I've installed LibreNMS using Docker on an Ubuntu Linux VM, running on an ESXi 6.5 host. In our setup, the only externally-exposed networking is for the nginx reverse proxy we'll employ to provide a single means of accessing everything we're installing.
+This guide grew out of a combo of a [Reddit post](https://www.reddit.com/r/networking/comments/6usj21/prebuilt_librenms_oxidized_config_backup_rsyslog/) and my homelab setup, where I've installed LibreNMS using Docker on an Ubuntu Linux VM, running on an ESXi 6.5 host. In our setup, the only externally-exposed networking is for the nginx reverse proxy we'll employ to provide a single means of accessing everything we're installing.
 
 Since we're not exposing a bunch of ports outside the host, how do we accomplish the magic of cross-container interactions without lots of extra work (like container IPAM, etc.) then? We'll use a custom Docker bridge, which makes use of Docker's embedded DNS services to support inter-container communication.
 
