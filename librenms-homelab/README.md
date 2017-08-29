@@ -24,6 +24,26 @@ $ sudo usermod -aG docker <myusername>
 
 After this, I'll logout and back in, so my group membership will be up to date, and I'll be able to execute docker commands.
 
+## Create new Docker bridge network
+
+My prior drafts of this guide made extensive use of Linked Containers, which automagically slip in hosts files entries in containers. It was pointed out to me that linked containers were considered deprecated, and so I've moved away from those, instead favoring a custom Docker bridged network. Why? Non-default bridges in Docker offer embedded DNS services to the containers, so you can have inter-container communication based on the containers' names, which magically turn into DNS entries managed by Docker without you having to do anything about it.
+
+Here, we'll create a simple bridge that mimics the default bridge. Docker will automatically choose the next /16 from 172.16/12, which will be 172.18/16 as our subnet.
+
+```
+$ docker network create \
+    -o "com.docker.network.bridge.name"="docker1" \
+    -o "com.docker.network.bridge.enable_ip_masquerade"="true" \
+    -o "com.docker.network.bridge.enable_icc"="true" \
+    -o "com.docker.network.bridge.host_binding_ipv4"="0.0.0.0" \
+    -o "com.docker.network.driver.mtu"="1500" \
+    containers
+```
+
+You can verify that it's setup the way you expect with `docker inspect containers`.
+
+What's the dark side of this? Now we'll need to specify `--net=containers` on all of our containers that we'd like to be part of this new bridged network.
+
 ## Install Portainer
 
 [Portainer](https://portainer.io) is a nice user interface for quick access to basic operations and telemetry from a Docker host.  We're installing it to manage the location instance of Docker, though it's capable of managing a swarm cluster as well. Again, that's outside the scope of what we're doing, but it's good to know it's possible, right?
@@ -32,6 +52,7 @@ After this, I'll logout and back in, so my group membership will be up to date, 
 $ docker run -d \
     --restart=unless-stopped \
     --name portainer \
+    --net=containers \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /var/docks/portainer:/data \
     portainer/portainer
@@ -47,6 +68,7 @@ PUID and PGID are the uid and gid values you want the processes to run as. For m
 $ docker run -d \
     --restart=unless-stopped \
     --name=mariadb \
+    --net=containers \
     -e PUID=1000 \
     -e PGID=1000 \
     -e MYSQL_ROOT_PASSWORD=<root-db-password> \
@@ -66,8 +88,8 @@ Now that you're connected, create the database & user. Again, generate a strong 
 
 ```
 CREATE DATABASE librenms CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-CREATE USER 'librenms'@'172.17.0.0/255.255.0.0' IDENTIFIED BY '<librenms-db-passwd>';
-GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'172.17.0.0/255.255.0.0';
+CREATE USER 'librenms'@'172.18.0.0/255.255.0.0' IDENTIFIED BY '<librenms-db-passwd>';
+GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'172.18.0.0/255.255.0.0';
 FLUSH PRIVILEGES;
 exit
 ```
@@ -80,6 +102,7 @@ Now that you've done that, exit that shell and get back to the host.
 $ docker run -d -t \
     --name=oxidized \
     --restart=unless-stopped \
+    --net=containers \
     -v /var/docks/oxidized:/etc/oxidized \
     alectolytic/oxidized
 ```
@@ -181,19 +204,18 @@ Got it? Ok, create the container.  The hostname you use in the BASE_URL should m
 ```
 $ docker run -d \
     --restart=unless-stopped \
-    -e DB_HOST=db \
+    --name=librenms \
+    --net=containers \
+    -e DB_HOST=mariadb \
     -e DB_NAME=librenms \
     -e DB_USER=librenms \
     -e DB_PASS=<librenms-db-passwd> \
     -e BASE_URL=https://<hostname-youre-using.domain.org> \
     -e POLLERS=16 \
     -e TZ=America/New_York \
-    --link mariadb:db \
-    --link oxidized:oxidized \
     -v /var/docks/librenms/logs:/opt/librenms/logs \
     -v /var/docks/librenms/rrd:/opt/librenms/rrd \
     -v /var/docks/librenms/config.custom.php:/opt/librenms/config.custom.php:ro \
-    --name librenms \
     jarischaefer/docker-librenms
 ```
 
@@ -220,12 +242,11 @@ First, create the container, then stop the container so we can complete our conf
 $ docker run -d \
     --name=nginx \
     --restart=unless-stopped \
+    --net=containers \
     -v /var/docks/nginx:/config \
     -e PGID=1000 -e PUID=1000 \
     -p 80:80 -p 443:443 \
     -e TZ=America/New_York \
-    --link librenms:librenms \
-    --link portainer:portainer \
     linuxserver/nginx
 $ docker stop nginx
 ```
@@ -241,7 +262,7 @@ Next, you'll want to create a directory for some configuration snippets we'll us
 ```
 $ cat internal-ip.conf
 allow <your internal subnet>/24;
-allow 172.17.0.0/16;
+allow 172.18.0.0/16;
 deny all;
 
 $ cat librenms.conf
