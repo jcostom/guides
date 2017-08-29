@@ -270,6 +270,7 @@ location / {
     proxy_http_version 1.1;
     proxy_set_header Connection "";
     proxy_pass http://librenms/;
+    include /config/snippets/internal-ip.conf;
 }
 
 $ cat portainer.conf
