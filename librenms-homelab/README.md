@@ -225,10 +225,12 @@ Next, we'll run a couple of commands to get the database populated, a user creat
 $ docker exec librenms sh -c "cd /opt/librenms && php /opt/librenms/build-base.php"
 $ docker exec librenms php /opt/librenms/adduser.php admin admin 10 test@example.com
 $ docker exec -it librenms /bin/bash
-# cd /opt/librenms
-# git checkout master
-# git pull
-# php includes/sql-schema/update.php
+# su librenms
+$ cd /opt/librenms
+$ git checkout master
+$ git pull
+$ php includes/sql-schema/update.php
+$ exit
 # exit
 ```
 
