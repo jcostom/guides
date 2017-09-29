@@ -104,7 +104,7 @@ $ docker run -d -t \
     --restart=unless-stopped \
     --net=containers \
     -v /var/docks/oxidized:/etc/oxidized \
-    alectolytic/oxidized
+    b3vis/oxidized
 ```
 
 At this point, you'll want to stop the Oxidized container so you can configure it. You do this, of course, with `$ docker stop oxidized`. Here's a sample `/var/docks/oxidized/config`:
