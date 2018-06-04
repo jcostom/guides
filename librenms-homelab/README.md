@@ -14,11 +14,22 @@ Do your updates, get your environment setup the way you like it. Shell, aliases,
 
 ## Add Docker
 
-Pay a visit to the Docker CE (Community Edition) [website](https://get.docker.com), and do what the script says. I always add my user to the docker group, as suggested at the end of the Docker CE installation process. At the time I'm writing this, the procedure looks like:
+Pay a visit to the Docker CE (Community Edition) [website](https://docs.docker.com/install/linux/docker-ce/ubuntu/), and do what the directions tell you to do. I always add my user to the docker group, as suggested at the end of the Docker CE installation process. At the time I'm writing this, the procedure looks like:
 
 ```
-$ curl -fsSL get.docker.com -o get-docker.sh
-$ sh get-docker.sh
+$ sudo apt-get remove docker docker.io
+$ sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+$ sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+$ sudo apt-get update
+$ sudo apt-get install docker-ce
 $ sudo usermod -aG docker <myusername>
 ```
 
@@ -215,23 +226,15 @@ $ docker run -d \
     -e TZ=America/New_York \
     -v /var/docks/librenms/logs:/opt/librenms/logs \
     -v /var/docks/librenms/rrd:/opt/librenms/rrd \
-    -v /var/docks/librenms/config.custom.php:/opt/librenms/config.custom.php:ro \
+    -v /var/docks/librenms/config.custom.php:/opt/librenms/config.d/config.custom.php \
     jarischaefer/docker-librenms
 ```
 
-Next, we'll run a couple of commands to get the database populated, a user created, and then get the librenms version back on master, update the app and db schema.
+Next, we'll run a couple of commands to get the database populated and create a user.
 
 ```
 $ docker exec librenms sh -c "cd /opt/librenms && php /opt/librenms/build-base.php"
 $ docker exec librenms php /opt/librenms/adduser.php admin admin 10 test@example.com
-$ docker exec -it librenms /bin/bash
-# su librenms
-$ cd /opt/librenms
-$ git checkout master
-$ git pull
-$ php includes/sql-schema/update.php
-$ exit
-# exit
 ```
 
 At this point, you can't login quite yet - that's going to happen after the next step, where we setup the nginx reverse proxy.
