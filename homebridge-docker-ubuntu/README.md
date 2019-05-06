@@ -14,7 +14,7 @@ When you're done, I'd consider adding your own userid to the docker group.
 
 Logout and back in, and whammo, you're able to execute Docker commands without the need of using sudo.
 
-## Install the Homebridge Container
+## Pull the Homebridge Container
 
 Start by pulling the latest copy of the `oznu/homebridge` container by doing:
 
