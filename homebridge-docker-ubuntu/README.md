@@ -37,7 +37,7 @@ Example command to create a Homebridge instance using the following parameters:
 
 * UID / GID both 1001
 * America/New_York timezone
-* Config data stored in /home/homebridge on the host
+* Config data stored in /home/homebridge on the host, maps to /homebridge *inside* the container.
 
 ```
 docker run -d \
